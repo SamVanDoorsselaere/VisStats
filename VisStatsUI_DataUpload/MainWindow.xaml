@@ -12,6 +12,8 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -23,5 +25,9 @@
         <Button Grid.Row="2" Grid.Column="0" Content="Havens" Margin="2" Click="Button_Click_Havens"/>
         <Button Grid.Row="2" Grid.Column="1" Content="Upload DB" Margin="2" Click="Button_Click_UploadHavens"/>
         <ListBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="2" IsEnabled="False" Name="HavensFileListBox"/>
+        <Button Grid.Row="4" Grid.Column="0" Content="Statistieken" Margin="2" Click="Button_Click_Statistieken"/>
+        <Button Grid.Row="4" Grid.Column="1" Content="Upload DB" Margin="2" Click="Button_Click_UploadStatistieken"/>
+        <ListBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Margin="2" IsEnabled="False" Name="StatistiekenFileListBox"/>
+
     </Grid>
 </Window>

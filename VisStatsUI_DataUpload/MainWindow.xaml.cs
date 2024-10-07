@@ -83,5 +83,29 @@ namespace VisStatsUI_DataUpload
             }
             MessageBox.Show("Upload klaar", "VisStats");
         }
+
+        private void Button_Click_Statistieken(object sender, RoutedEventArgs e)
+        {
+            bool? result = dialog.ShowDialog();
+            if (result == true)
+            {
+                var filenames = dialog.FileNames;
+                StatistiekenFileListBox.ItemsSource = filenames;
+                dialog.FileName = null;
+            }
+            else
+            {
+                StatistiekenFileListBox.ItemsSource = null;
+            }
+        }
+
+        private void Button_Click_UploadStatistieken(object sender, RoutedEventArgs e)
+        {
+            foreach (string filename in StatistiekenFileListBox.ItemsSource)
+            {
+                visStatsManager.UploadStatistieken(filename);
+            }
+            MessageBox.Show("Upload klaar", "VisStats");
+        }
     }
 }

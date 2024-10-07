@@ -12,12 +12,12 @@ namespace VisStatsBL.Managers
     public class VisStatsManager
     {
         private IFileProcessor fileProcessor;
-        private IVisStatsRepository visStatsRepository;
+        private IVisStatsRepository VisStatsRepository;
 
         public VisStatsManager(IFileProcessor fileProcessor, IVisStatsRepository visStatsRepository)
         {
             this.fileProcessor = fileProcessor;
-            this.visStatsRepository = visStatsRepository;
+            this.VisStatsRepository = visStatsRepository;
         }
         public void UploadVissoorten(string fileName)
         {
@@ -27,15 +27,15 @@ namespace VisStatsBL.Managers
                 List<Vissoort> vissoorten = MaakVissoorten(soorten);
                 foreach (Vissoort vis in vissoorten)
                 {
-                    if (!visStatsRepository.HeeftVissoort(vis)) // Dit moet nu werken
+                    if (!VisStatsRepository.HeeftVissoort(vis)) // Dit moet nu werken
                     {
-                        visStatsRepository.SchrijfSoort(vis);
+                        VisStatsRepository.SchrijfSoort(vis);
                     }
                 }
             }
-            catch (Exception ex)
+            catch (ManagerException ex)
             {
-                // Foutafhandeling
+                throw new ManagerException("UploadVissoorten", ex);
             }
         }
 
@@ -67,15 +67,15 @@ namespace VisStatsBL.Managers
                 List<Haven> havens = MaakHavens(haven);
                 foreach (Haven h in havens)
                 {
-                    if (!visStatsRepository.HeeftHaven(h)) // Dit moet nu werken
+                    if (!VisStatsRepository.HeeftHaven(h)) // Dit moet nu werken
                     {
-                        visStatsRepository.SchrijfHaven(h);
+                        VisStatsRepository.SchrijfHaven(h);
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Foutafhandeling
+                throw new ManagerException("UploadHavens", ex);
             }
         }
 
@@ -90,13 +90,35 @@ namespace VisStatsBL.Managers
                     {
                         Haven.Add(h, new Haven(h));
                     }
-                    catch (DomeinException)
+                    catch (ManagerException)
                     {
 
                     }
                 }
             }
             return Haven.Values.ToList();
+        }
+
+        public void UploadStatistieken(string fileName)
+        {
+            try
+            {
+                // is reed opgeladen
+                if (!VisStatsRepository.IsOpgeladen(fileName))
+                {
+                    //lezen gegevens
+                    List<Vissoort> soorten = VisStatsRepository.LeesVissoorten();
+                    List<Haven> havens = VisStatsRepository.LeesHavens();
+                    //schrijf naar DB
+                    var data = fileProcessor.LeesStatistieken(fileName, soorten, havens);
+                    VisStatsRepository.SchrijfStatistieken(data, fileName);
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                throw new ManagerException("UploadStatistieken", ex);
+            }
         }
     }
 }

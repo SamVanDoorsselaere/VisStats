@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VisStatsBL.Model;
 
 namespace VisStatsBL.Interfaces
 {
@@ -10,5 +11,6 @@ namespace VisStatsBL.Interfaces
     {
         List<string> LeesSoorten(string fileName);
         List<string> LeesHavens(string fileName);
+        List<VisStatsDataRecord> LeesStatistieken(string fileName, List<Vissoort> vissoorten, List<Haven> havens);
     }
 }
