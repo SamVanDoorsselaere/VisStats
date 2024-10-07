@@ -193,15 +193,6 @@ namespace VisStatsDL_SQL
                         cmd.Parameters["@waarde"].Value = dataRecord.Waarde;
                         cmd.ExecuteNonQuery();
                     }
-
-                    //schrijf in Upload / korte versie
-                    cmd.CommandText = SQLupload;
-                    cmd.Parameters.Clear();
-                    cmd.Parameters.AddWithValue("@fileName", fileName.Substring(fileName.LastIndexOf("\\") + 1));
-                    cmd.Parameters.AddWithValue("@pad", fileName.Substring(0, fileName.LastIndexOf("\\") + 1));
-                    cmd.Parameters.AddWithValue("@datum", DateTime.Now);
-                    cmd.ExecuteNonQuery();
-                    cmd.Transaction.Commit();
                 }
                 catch (Exception ex)
                 {
