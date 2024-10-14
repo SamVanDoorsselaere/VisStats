@@ -31,5 +31,10 @@ namespace VisStatsBL.Model
         {
             Naam = naam;
         }
+
+        public override string ToString()
+        {
+            return Naam;
+        }
     }
 }

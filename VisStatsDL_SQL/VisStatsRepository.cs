@@ -201,5 +201,66 @@ namespace VisStatsDL_SQL
                 }
             }
         }
+
+        public List<int> LeesJaartallen()
+        {
+            string SQL = "SELECT DISTINCT jaar FROM VisStats";
+            List<int> jaartallen = new List<int>();
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlCommand cmd = conn.CreateCommand())
+            {
+                try
+                {
+                    conn.Open();
+                    cmd.CommandText = SQL;
+                    IDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        jaartallen.Add((int)reader["jaar"]);
+                    }
+                    return jaartallen;
+                }
+                catch (Exception ex) { throw new Exception("LeesJaartallen", ex); }
+            }
+        }   
+
+        public List<JaarVangst> LeesStatistieken(int jaar, Haven haven, List<Vissoort> vissoorten, Eenheid eenheid)
+        {
+            string kolom = "";
+            switch (eenheid)
+            {
+                case Eenheid.kg: kolom = "gewicht"; break;
+                case Eenheid.euro: kolom = "waarde"; break;
+            }
+            string paramSoorten = "";
+            for (int i = 0; i < vissoorten.Count; i++) paramSoorten += $"@ps{i},";
+            paramSoorten = paramSoorten.Remove(paramSoorten.Length - 1);
+            string SQL = $"SELECT t2.naam, t1.jaar, SUM({kolom}) totaal, MIN({kolom}) minimum, MAX({kolom}) " +
+                $"maximum, AVG({kolom}) gemiddelde FROM VisStats t1 INNER JOIN soort t2 ON " +
+                $"t1.soort_id = t2.id WHERE haven_id = @haven_id AND " +
+                $"jaar = @jaar AND soort_id IN ({paramSoorten}) GROUP BY t2.naam, t1.jaar";
+            List<JaarVangst> vangst = new();
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlCommand cmd = conn.CreateCommand())
+            {
+                try
+                {
+                    conn.Open();
+                    cmd.CommandText = SQL;
+                    cmd.Parameters.AddWithValue("@jaar", jaar);
+                    cmd.Parameters.AddWithValue("@haven_id", haven.ID);
+                    for (int i = 0; i < vissoorten.Count; i++) cmd.Parameters.AddWithValue($"@ps{i}", vissoorten[i].ID);
+                    IDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        vangst.Add(new JaarVangst((string)reader["naam"], 
+                            (double)reader["totaal"], (double)reader["minimum"], 
+                            (double)reader["maximum"], (double)reader["gemiddelde"]));
+                    }
+                    return vangst;
+                }
+                catch (Exception ex) { throw new Exception("GeefJaarVangst", ex); }
+            }
+        }
     }
 }

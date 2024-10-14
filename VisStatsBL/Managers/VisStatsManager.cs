@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -118,6 +119,54 @@ namespace VisStatsBL.Managers
             catch (Exception ex)
             {
                 throw new ManagerException("UploadStatistieken", ex);
+            }
+        }
+
+        public List<Haven> GeefHavens()
+        {
+            try
+            {
+                return VisStatsRepository.LeesHavens();
+            }
+            catch (Exception ex)
+            {
+                throw new ManagerException("GeeftHavens");
+            }
+        }
+
+        public List<int> GeefJaartallen()
+        {
+            try
+            {
+                return VisStatsRepository.LeesJaartallen();
+            }
+            catch (Exception ex)
+            {
+                throw new ManagerException("GeefJaartallen", ex);
+            }
+        }
+
+        public List<Vissoort> GeefVissoorten()
+        {
+            try
+            {
+                return VisStatsRepository.LeesVissoorten();
+            }
+            catch (Exception ex)
+            {
+                throw new ManagerException("GeefVissoorten", ex);
+            }
+        }
+
+        public List<JaarVangst> GeefVangst(int jaar, Haven haven, List<Vissoort> vissoorten, Eenheid eenheid)
+        {
+            try
+            {
+                return VisStatsRepository.LeesStatistieken(jaar, haven, vissoorten, eenheid);
+            }
+            catch (Exception ex)
+            {
+                throw new ManagerException("Geefvissoorten", ex);
             }
         }
     }
